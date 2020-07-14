@@ -39,12 +39,13 @@ const Form = () => {
     }, [formSchema, user])
 
     const handleChange = event => {
-        const value =
+        const targetValue =
         event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         setUser({
             ...user,
-            [event.target.name]: value
+            [event.target.name]: targetValue
         });
+        console.log(event);
         validateChange(event);
     }
 
@@ -73,7 +74,7 @@ const Form = () => {
             </label>
             <label htmlFor='terms'>
                 Terms of Service
-                <input name='terms' type='checkbox' onChange={handleChange} errors={errors} />
+                <input name='terms' type='checkbox' value={user.terms} onChange={handleChange} errors={errors} />
                 {errors.terms ? <p>{errors.terms}</p> : ''}
             </label>
             <button disabled={disableButton}>Submit</button>
