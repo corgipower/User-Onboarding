@@ -45,15 +45,18 @@ const Form = () => {
             ...user,
             [event.target.name]: targetValue
         });
-        console.log(event);
+        console.log(errors);
         validateChange(event);
     }
 
     const handleSubmit = event => {
         event.preventDefault();
-        console.log('submitted');
+        axios
+            .post('https://reqres.in/api/users', user)
+            .then(res => console.log('form submitted', res))
+            .catch(err => console.log('error', err));
         setUser(defaultState);
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit}>
@@ -75,7 +78,7 @@ const Form = () => {
             <label htmlFor='terms'>
                 Terms of Service
                 <input name='terms' type='checkbox' value={user.terms} onChange={handleChange} errors={errors} />
-                {errors.terms ? <p>{errors.terms}</p> : ''}
+                {errors.terms ? '' : <p>{errors.terms}</p>}
             </label>
             <button disabled={disableButton}>Submit</button>
         </form>
