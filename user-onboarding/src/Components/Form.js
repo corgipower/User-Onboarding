@@ -13,6 +13,7 @@ const Form = () => {
     const [user, setUser] = useState(defaultState);
     const [errors, setErrors] = useState({...defaultState, terms: ''});
     const [disableButton, setDisableButton] = useState(true);
+    const [users, setUsers] = useState([]);
 
     let formSchema = yup.object().shape({
         name: yup.string().required('We need your name'),
@@ -45,7 +46,6 @@ const Form = () => {
             ...user,
             [event.target.name]: targetValue
         });
-        console.log(errors);
         validateChange(event);
     }
 
@@ -53,35 +53,46 @@ const Form = () => {
         event.preventDefault();
         axios
             .post('https://reqres.in/api/users', user)
-            .then(res => console.log('form submitted', res))
+            .then(res => {
+                console.log(res);
+                setUsers([
+                    ...users,
+                    res.data
+                ]);
+            })
             .catch(err => console.log('error', err));
         setUser(defaultState);
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor='name'>
-                Name:
-                <input type='text' name='name' value={user.name} onChange={handleChange} errors={errors} />
-                {errors.name.length > 0 ? <p>{errors.name}</p> : ''} 
-            </label>
-            <label htmlFor='email'>
-                Email:
-                <input type='text' name='email' value={user.email} onChange={handleChange} errors={errors} />
-                {errors.email.length > 0 ? <p>{errors.email}</p> : ''} 
-            </label>
-            <label htmlFor='password'>
-                Password:
-                <input type='text' name='password' value={user.password} onChange={handleChange} errors={errors} />
-                {errors.password.length > 0 ? <p>{errors.password}</p> : ''} 
-            </label>
-            <label htmlFor='terms'>
-                Terms of Service
-                <input name='terms' type='checkbox' value={user.terms} onChange={handleChange} errors={errors} />
-                {errors.terms ? '' : <p>{errors.terms}</p>}
-            </label>
-            <button disabled={disableButton}>Submit</button>
-        </form>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor='name'>
+                    Name:
+                    <input type='text' name='name' value={user.name} onChange={handleChange} errors={errors} />
+                    {errors.name.length > 0 ? <p>{errors.name}</p> : ''} 
+                </label>
+                <label htmlFor='email'>
+                    Email:
+                    <input type='text' name='email' value={user.email} onChange={handleChange} errors={errors} />
+                    {errors.email.length > 0 ? <p>{errors.email}</p> : ''} 
+                </label>
+                <label htmlFor='password'>
+                    Password:
+                    <input type='text' name='password' value={user.password} onChange={handleChange} errors={errors} />
+                    {errors.password.length > 0 ? <p>{errors.password}</p> : ''} 
+                </label>
+                <label htmlFor='terms'>
+                    Terms of Service
+                    <input name='terms' type='checkbox' value={user.terms} onChange={handleChange} errors={errors} defaultChecked={false} />
+                    {errors.terms > 0 ? <p>{errors.terms}</p> : null}
+                </label>
+                <button disabled={disableButton}>Submit</button>
+                {users.map(u => 
+                    <p key={u.id}>{u.name} {u.email}</p>
+                )}
+            </form>
+        </div>
     )
 }
 
