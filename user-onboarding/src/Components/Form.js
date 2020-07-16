@@ -7,7 +7,7 @@ const Form = () => {
         name: '',
         email: '',
         password: '',
-        terms: false,
+        terms: 0,
     }
 
     const [user, setUser] = useState(defaultState);
@@ -54,7 +54,7 @@ const Form = () => {
         axios
             .post('https://reqres.in/api/users', user)
             .then(res => {
-                console.log(res);
+                console.log(errors);
                 setUsers([
                     ...users,
                     res.data
@@ -84,8 +84,8 @@ const Form = () => {
                 </label>
                 <label htmlFor='terms'>
                     Terms of Service
-                    <input name='terms' type='checkbox' value={user.terms} onChange={handleChange} errors={errors} defaultChecked={false} />
-                    {errors.terms > 0 ? <p>{errors.terms}</p> : null}
+                    <input name='terms' type='checkbox' value={user.terms} onChange={handleChange} errors={errors} checked={user.terms} />
+                    {errors.terms.length > 0 ? <p>{errors.terms}</p> : null}
                 </label>
                 <button disabled={disableButton}>Submit</button>
                 {users.map(u => 
