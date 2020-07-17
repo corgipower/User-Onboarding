@@ -24,11 +24,17 @@ const Form = () => {
 
     const validateChange = event => {
         event.persist();
+        console.log('VCevent', event);//checkbox value is correct true/false
+        console.log('VCuser', user);//checkbox value is incorrect true/0
 
         yup.reach(formSchema, event.target.name)
             .validate(event.target.value)
-            .then(valid => setErrors({...errors, [event.target.name]: ''}))
-            .catch(error => setErrors({...errors, [event.target.name]: error.errors[0]}));
+            .then(valid => {
+                console.log('valid', valid);//no log statement when box is checked
+                setErrors({...errors, [event.target.name]: ''})})
+            .catch(error => {
+                console.log('error', error); //logs when box is checked
+                setErrors({...errors, [event.target.name]: error.errors[0]})});
 
         if(event.target.value.length === 0) {
             setErrors({...errors, [event.target.name]: `${event.target.name} is required`});
@@ -46,6 +52,8 @@ const Form = () => {
             ...user,
             [event.target.name]: targetValue
         });
+        console.log('HCtargetValue', targetValue); //checkbox value correct true/false
+        console.log('HCuser', user);//checkbox value incorrect true/0
         validateChange(event);
     }
 
@@ -70,24 +78,24 @@ const Form = () => {
                 <label htmlFor='name'>
                     Name:
                     <input type='text' name='name' value={user.name} onChange={handleChange} errors={errors} />
-                    {errors.name.length > 0 ? <p>{errors.name}</p> : ''} 
+                    {errors.name.length > 0 ? <p data-cy='name-err'>{errors.name}</p> : ''} 
                 </label>
                 <label htmlFor='email'>
                     Email:
                     <input type='text' name='email' value={user.email} onChange={handleChange} errors={errors} />
-                    {errors.email.length > 0 ? <p>{errors.email}</p> : ''} 
+                    {errors.email.length > 0 ? <p data-cy='email-err'>{errors.email}</p> : ''} 
                 </label>
                 <label htmlFor='password'>
                     Password:
                     <input type='text' name='password' value={user.password} onChange={handleChange} errors={errors} />
-                    {errors.password.length > 0 ? <p>{errors.password}</p> : ''} 
+                    {errors.password.length > 0 ? <p data-cy='pw-err'>{errors.password}</p> : ''} 
                 </label>
                 <label htmlFor='terms'>
                     Terms of Service
                     <input name='terms' type='checkbox' value={user.terms} onChange={handleChange} errors={errors} checked={user.terms} />
-                    {errors.terms.length > 0 ? <p>{errors.terms}</p> : null}
+                    {errors.terms.length > 0 ? <p data-cy='terms-err'>{errors.terms}</p> : null}
                 </label>
-                <button disabled={disableButton}>Submit</button>
+                <button data-cy='submit' disabled={disableButton}>Submit</button>
                 {users.map(u => 
                     <p key={u.id}>{u.name} {u.email}</p>
                 )}
